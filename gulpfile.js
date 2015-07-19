@@ -85,7 +85,6 @@ gulp.task('styles', function () {
   return gulp.src([
     'app/styles/*.scss',
     'app/styles/**/*.css',
-    'app/styles/components/components.scss'
   ])
     .pipe($.sourcemaps.init())
     .pipe($.changed('.tmp/styles', {extension: '.css'}))
