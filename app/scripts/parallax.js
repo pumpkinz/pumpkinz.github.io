@@ -45,7 +45,6 @@
         });
 
         $('.mdl-layout__content').scroll(function() {
-        //$(window).scroll(function() {
           window_width = $(window).width();
           updateParallax(false);
         });
