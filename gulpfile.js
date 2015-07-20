@@ -1,32 +1,33 @@
-/**
- *
- *  Web Starter Kit
- *  Copyright 2014 Google Inc. All rights reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License
- *
- */
-
-'use strict';
-
-// Include Gulp & tools we'll use
+// Include gulp
 var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
+
+// Include Our Plugins
+var jshint = require('gulp-jshint');
+var sass = require('gulp-sass');
+var uglify = require('gulp-uglify');
+var minifyhtml = require('gulp-minify-html');
+var imagemin = require('gulp-imagemin');
+var gulpif = require('gulp-if');
+var useref = require('gulp-useref');
+var rev = require('gulp-rev');
+var collect = require('gulp-rev-collector');
+var rs = require('run-sequence');
 var del = require('del');
-var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
-var pagespeed = require('psi');
+var autoprefixer = require('gulp-autoprefixer');
 var reload = browserSync.reload;
+
+// Paths
+var app = 'app';
+var tmp = 'tmp';
+var dist = 'dist';
+
+var appPaths = {
+  js: app + '/scripts/**/*.js',
+  sass: app + '/styles/**/*.sass',
+  html: app + '/**/*.html',
+  img: app + '/images/**/*'
+};
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -40,130 +41,110 @@ var AUTOPREFIXER_BROWSERS = [
   'bb >= 10'
 ];
 
-// Lint JavaScript
-gulp.task('jshint', function () {
-  return gulp.src('app/scripts/**/*.js')
-    .pipe(reload({stream: true, once: true}))
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('jshint-stylish'))
-    .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+// Functions
+function onError(err) {
+  console.log(); console.log(err.toString()); console.log();
+}
+
+// Lint Task
+gulp.task('jshint', function() {
+  gulp.src(appPaths.js)
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
 });
 
-// Optimize images
-gulp.task('images', function () {
-  return gulp.src('app/images/**/*')
-    .pipe($.cache($.imagemin({
-      progressive: true,
-      interlaced: true
-    })))
-    .pipe(gulp.dest('dist/images'))
-    .pipe($.size({title: 'images'}));
+// Copy misc files
+gulp.task('copy', function() {
+  gulp.src([appPaths + '/favicon.ico', appPaths + '/robots.txt'])
+    .pipe(gulp.dest(dist));
 });
 
-// Copy all files at the root level (app)
-gulp.task('copy', function () {
-  return gulp.src([
-    'app/*',
-    '!app/*.html',
-    'node_modules/apache-server-configs/dist/.htaccess'
-  ], {
-    dot: true
-  }).pipe(gulp.dest('dist'))
-    .pipe($.size({title: 'copy'}));
+// Compile Our Sass for development
+gulp.task('sass', function() {
+  gulp.src(appPaths.sass)
+    .pipe(sass())
+    .on('error', onError)
+    .pipe(autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
+    .pipe(gulp.dest(app + '/styles'))
 });
 
-// Copy web fonts to dist
-gulp.task('fonts', function () {
-  return gulp.src(['app/fonts/**'])
-    .pipe(gulp.dest('dist/fonts'))
-    .pipe($.size({title: 'fonts'}));
+// Compile Our Sass for production
+gulp.task('sass-build', function() {
+  gulp.src(appPaths.sass)
+    .pipe(sass({ outputStyle: 'compressed' }))
+    .on('error', onError)
+    .pipe(autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
+    .pipe(gulp.dest(app + '/styles'))
 });
 
-// Compile and automatically prefix stylesheets
-gulp.task('styles', function () {
-  // For best performance, don't add Sass partials to `gulp.src`
-  return gulp.src([
-    'app/styles/*.scss',
-    'app/styles/**/*.css',
-  ])
-    .pipe($.sourcemaps.init())
-    .pipe($.changed('.tmp/styles', {extension: '.css'}))
-    .pipe($.sass({
-      precision: 10,
-      onError: console.error.bind(console, 'Sass error:')
-    }))
-    .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
-    .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('.tmp/styles'))
-    // Concatenate and minify styles
-    .pipe($.if('*.css', $.csso()))
-    .pipe(gulp.dest('dist/styles'))
-    .pipe($.size({title: 'styles'}));
+// Minify images and rev it
+gulp.task('imagemin', function() {
+  return gulp.src(appPaths.img)
+    .pipe(imagemin())
+    .pipe(rev())
+    .pipe(gulp.dest(dist + '/images')) //write rev'd img to dist
+    .pipe(rev.manifest())
+    .pipe(gulp.dest(tmp + '/images')) //write img manifest to tmp
 });
 
-// Scan your HTML for assets & optimize them
-gulp.task('html', function () {
-  var assets = $.useref.assets({searchPath: '{.tmp,app}'});
+// Combine assets (JS and CSS), rev them, and minify HTML
+gulp.task('useref', function() {
+  var assets = useref.assets();
 
-  return gulp.src('app/**/*.html')
+  return gulp.src(app + '/index.html')
     .pipe(assets)
-    // Concatenate and minify JavaScript
-    .pipe($.if('*.js', $.uglify({preserveComments: 'some'})))
-    // Remove any unused CSS
-    // Note: if not using the Style Guide, you can delete it from
-    //       the next line to only include styles your project uses.
-    .pipe($.if('*.css', $.uncss({
-      html: [
-        'app/index.html',
-        'app/styleguide.html'
-      ],
-      // CSS Selectors for UnCSS to ignore
-      ignore: [
-        /.navdrawer-container.open/,
-        /.app-bar.open/
-      ]
-    })))
-    // Concatenate and minify styles
-    // In case you are still using useref build blocks
-    .pipe($.if('*.css', $.csso()))
+    .pipe(gulpif('*.js', uglify() ))
+    .pipe(rev()) //revision all assets (js, css)
+    .pipe(gulp.dest(tmp)) //write rev'd assets to tmp
+    .pipe(rev.manifest())
+    .pipe(gulp.dest(tmp)) //write assets manifest to tmp
     .pipe(assets.restore())
-    .pipe($.useref())
-    // Update production Style Guide paths
-    .pipe($.replace('components/components.css', 'components/main.min.css'))
-    // Minify any HTML
-    .pipe($.if('*.html', $.minifyHtml()))
-    // Output files
-    .pipe(gulp.dest('dist'))
-    .pipe($.size({title: 'html'}));
+    .pipe(useref())
+    .pipe(minifyhtml())
+    .pipe(gulp.dest(tmp)) //write non assets (index.html) to tmp
 });
 
-// Clean output directory
-gulp.task('clean', del.bind(null, ['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
+gulp.task('collect', function () {
+  return gulp.src([tmp + '/**/*.json', tmp + '/**/*.{html,css,js}'])
+    .pipe(collect()) //replace all occurence in manifest (.json) in all .{html,css,js} on tmp
+    .pipe(gulp.dest(dist)) //write it to dist
+});
 
 // Watch files for changes & reload
-gulp.task('serve', ['styles'], function () {
+gulp.task('serve', ['sass'], function () {
   browserSync({
     notify: false,
     // Customize the BrowserSync console logging prefix
-    logPrefix: 'WSK',
+    logPrefix: 'PUMPKIN',
     // Run as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
-    server: ['.tmp', 'app']
+    server: 'app'
   });
 
   gulp.watch(['app/**/*.html'], reload);
-  gulp.watch(['app/styles/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['app/scripts/**/*.js'], ['jshint']);
-  gulp.watch(['app/images/**/*'], reload);
+  gulp.watch(appPaths.sass, ['sass', reload]);
+  gulp.watch(appPaths.js, ['jshint']);
+  gulp.watch(appPaths.img, reload);
 });
 
-// Build and serve the output from the dist build
-gulp.task('serve:dist', ['default'], function () {
+// Default Task
+gulp.task('clean', function (cb) {
+  del(dist, cb);
+});
+
+gulp.task('finish', function (cb) {
+  del(tmp, cb);
+});
+
+gulp.task('default', ['jshint', 'sass', 'watch']);
+gulp.task('build', function() { rs(['clean', 'finish'], ['sass-build', 'imagemin'], 'useref', 'collect', 'copy', 'finish') });
+
+gulp.task('serve:dist', ['build'], function () {
   browserSync({
     notify: false,
-    logPrefix: 'WSK',
+    logPrefix: 'PUMPKIN',
     // Run as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
@@ -171,22 +152,3 @@ gulp.task('serve:dist', ['default'], function () {
     server: 'dist'
   });
 });
-
-// Build production files, the default task
-gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['jshint', 'html', 'images', 'fonts', 'copy'], cb);
-});
-
-// Run PageSpeed Insights
-gulp.task('pagespeed', function (cb) {
-  // Update the below URL to the public URL of your site
-  pagespeed.output('example.com', {
-    strategy: 'mobile',
-    // By default we use the PageSpeed Insights free (no API key) tier.
-    // Use a Google Developer API key if you have one: http://goo.gl/RkN0vE
-    // key: 'YOUR_API_KEY'
-  }, cb);
-});
-
-// Load custom tasks from the `tasks` directory
-// try { require('require-dir')('tasks'); } catch (err) { console.error(err); }
