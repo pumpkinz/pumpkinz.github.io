@@ -55,7 +55,7 @@ gulp.task('jshint', function() {
 
 // Copy misc files
 gulp.task('copy', function() {
-  gulp.src([appPaths + '/favicon.ico', appPaths + '/robots.txt'])
+  gulp.src([app + '/favicon.ico', app + '/robots.txt', app + '/CNAME'])
     .pipe(gulp.dest(dist));
 });
 
