@@ -1,0 +1,62 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+@charset "utf-8"
+
+// Custom Style
+$primary-color: #EF6C00
+
+// Import
+@import "variables", "mixins", "base", "layout", "syntax-highlighting", "materialize/materialize"
+
+// Custom import
+@import "sidenav", "footer", "blog", "post"
+
+html, body
+  font-family: 'Roboto','Helvetica',sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  height: 100%
+
+// Sticky footer
+.wrapper
+  min-height: 100%
+  height: auto !important
+  height: 100%
+  margin: 0 auto -83px
+
+.push
+  height: 83px
+
+footer
+  height: 50px
+
+footer
+  @media #{$medium-and-down}
+    height: auto
+
+// Banner
+.banner-img
+  margin-top: -192px
+.banner-title
+  margin-top: 80px
+  color: #fff
+
+// Nav overwrite
+nav
+  box-shadow: none
+
+// Overwrite
+a
+  color: inherit
+
+// Parallax
+.parallax-container
+  height: 250px
+  //margin-bottom: -192px
+  .parallax
+    background-color: $primary-color
+
+// Misc
+.blog-title
+  margin-bottom: 0

@@ -1,0 +1,40 @@
+# Site settings
+title: Pumpkinz
+email: pumpkinz.dev@gmail.com
+description: >
+  Pumpkinz | Joint coalition of Software Engineers
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://pumpkinz.io" # the base hostname & protocol for your site
+github_username:  pumpkinz
+
+# Theme settings
+theme_color: "#EF6C00"
+
+# Touch icon settings
+chrome_touch_icon: "/images/touch/chrome-touch-icon-192x192.png"
+apple_touch_icon: "/images/touch/apple-touch-icon.png"
+ms_tile_image: "/images/touch/ms-touch-icon-144x144-precomposed.png"
+favicon: "favicon.ico"
+
+# Build settings
+markdown: kramdown
+
+# Sass settings
+sass:
+  style: :compressed
+
+authors:
+  wiseodd:
+    display_name: Agustinus Kristiadi
+    gravatar: 13c6bb393051a1a5d0139ea159db5f91
+    email: kristiadi7@gmail.com
+    web: http://www.thirdworldnomad.com/
+    twitter: wiseodd
+    github: wiseodd
+  timotiusnc:
+    display_name: Timotius N. Chandra
+    gravatar: 9f41deb8a1ac22f1116216b3bbdef1b8
+    email: timotius.nc@gmail.com
+    web: http://timotiusnc.github.io/
+    twitter: TimotiusNC
+    github: timotiusnc

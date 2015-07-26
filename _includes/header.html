@@ -1,0 +1,42 @@
+<header>
+  <div class="">
+    <nav>
+        <div class="nav-wrapper">
+          <a href="{{ site.baseurl }}/" class="brand-logo">{{ site.title }}</a>
+          <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="/about">About</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/privacy">Privacy</a></li>
+          </ul>
+          <div class="side-nav" id="mobile-demo">
+            <div class="side-nav-header">
+              <img src="/images/pumpkin_photo.png" class="circle">
+              <a href="{{ site.baseurl }}" class="side-nav-title">Pumpkinz</a>
+            </div>
+            <ul>
+              <li><a href="/about">About</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/privacy">Privacy</a></li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="parallax-container">
+    <div class="parallax">
+      <div class="row container hide-on-small-and-down">
+        <div class="col s12 m6">
+          &nbsp;
+        </div>
+        <div class="col s12 m6">
+          {% if page.title == null && post.title == null %}
+            <h2 class="banner-title">Pumpkin Reader for Hacker News</h2>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,40 @@
+.post-card
+  margin-bottom: 35px
+  margin-top: -128px
+
+  &.mdl-card
+    width: auto
+    @media #{$small-and-down}
+      box-shadow: none
+
+  > .mdl-card__supporting-text
+    padding: 32px
+    width: 100%
+    @media #{$medium-and-down}
+      padding: 16px
+
+  > .mdl-card__title
+    color: #fff
+    height: 200px
+
+  >.mdl-card__supporting-text > .post-title
+    font-weight: 500
+    margin-top: 0
+  
+  .post-author
+    margin-bottom: 32px
+    .author-avatar, .author-info
+      float: left
+    .author-avatar
+      margin-right: 15px
+    .author-info > a
+      font-size: 13px
+
+  .post-content
+    .post-image
+      display: block
+      margin: 30px auto
+      width: 80%
+      box-shadow: 0px 8px 17px 0px rgba(0, 0, 0, 0.2), 0px 6px 20px 0px rgba(0, 0, 0, 0.19)
+      @media #{$medium-and-down}
+        width: 100%

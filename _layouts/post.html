@@ -1,0 +1,25 @@
+---
+layout: default
+---
+<div class="mdl-card mdl-shadow--2dp post-card">
+  <!--<div class="mdl-card__title hide-on-small-and-down" style="background: url('{{ page.image }}') center / cover"></div>-->
+  <div class="mdl-card__supporting-text">
+    <h3 class="post-title">{{ page.title }}</h3>
+    
+    {% assign author = site.authors[page.author] %}
+    <div class="post-author clearfix">
+      <div class="author-avatar">
+        <a href="https://github.com/{{ author.github }}"><img src="http://www.gravatar.com/avatar/{{ author.gravatar }}?s=40"></a>
+      </div>
+      <div class="author-info mdl-color-text--grey-600">
+        <a href="https://github.com/{{ author.github }}">{{ author.display_name }}</a><br>
+        <a href="#!">{{ page.date | date: "%b %-d, %Y"}}</a>
+      </div>
+    </div>
+
+    <article class="post-content">
+      <img class="post-image" src="{{ page.image }}">
+      {{ content }}
+    </article>
+  </div>
+</div>
