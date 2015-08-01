@@ -1,24 +1,22 @@
 .blog-wrapper
   margin-top: -128px
   .blog-card
+    min-height: auto
     margin-bottom: 35px
 
     &.mdl-card
       width: auto
 
-    > .mdl-card__title
-      color: #fff
-      height: 200px
-
     > .mdl-card__supporting-text
-      padding: 16px
       width: 100%
       > .mdl-card__title-text
-        font-weight: 500
         margin-bottom: 15px
+        a
+          color: #000
 
-    > .mdl-card__menu
-      color: #fff
+    > .mdl-card__actions
+      .read-more-btn
+        margin-top: 2px
 
     .author-avatar, .author-info
       float: right
@@ -27,4 +25,6 @@
       margin-left: 15px
 
     .author-info > a
+      margin-top: 2px
+      color: #757575
       font-size: 13px
