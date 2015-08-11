@@ -14,8 +14,9 @@ theme_color: "#EF6C00"
 chrome_touch_icon: "/images/touch/chrome-touch-icon-192x192.png"
 apple_touch_icon: "/images/touch/apple-touch-icon.png"
 ms_tile_image: "/images/touch/ms-touch-icon-144x144-precomposed.png"
-favicon: "favicon.ico"
+favicon: "/favicon.ico"
 image: "/images/pumpkin_photo.png"
+author_image: "/images/pumpkin_photo.png"
 
 # Build settings
 markdown: kramdown
@@ -26,14 +27,14 @@ sass:
 
 authors:
   wiseodd:
-    display_name: Agustinus Kristiadi
+    display_name: wiseodd
     gravatar: 13c6bb393051a1a5d0139ea159db5f91
     email: kristiadi7@gmail.com
     web: http://www.thirdworldnomad.com/
     twitter: wiseodd
     github: wiseodd
   timotiusnc:
-    display_name: Timotius N. Chandra
+    display_name: timotiusnc
     gravatar: 9f41deb8a1ac22f1116216b3bbdef1b8
     email: timotius.nc@gmail.com
     web: http://timotiusnc.github.io/

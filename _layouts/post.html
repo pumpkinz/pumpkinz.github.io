@@ -5,10 +5,11 @@ layout: default
   <div class="mdl-card__supporting-text">
     <h3 class="post-title">{{ page.title }}</h3>
     
+    {% assign author_image = site.author_image %}
     {% assign author = site.authors[page.author] %}
     <div class="post-author clearfix">
       <div class="author-avatar">
-        <a href="https://github.com/{{ author.github }}"><img src="http://www.gravatar.com/avatar/{{ author.gravatar }}?s=40"></a>
+        <a href="https://github.com/{{ author.github }}"><img src="{{ author_image }}"></a>
       </div>
       <div class="author-info mdl-color-text--grey-600">
         <a href="https://github.com/{{ author.github }}">{{ author.display_name }}</a><br>
